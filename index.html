@@ -1,292 +1,1082 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<meta name="theme-color" content="#2F6B4F" />
-<title>バリューブックス 本の買取</title>
-<link rel="stylesheet" href="styles.css" />
-<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>バリューブックス LIFF買取モック</title>
+  <style>
+    :root {
+      --bg: #f7f3ec;
+      --paper: #fffdf8;
+      --ink: #24211c;
+      --muted: #756f66;
+      --line: #ded4c5;
+      --brand: #1f5b4a;
+      --brand2: #d66b3d;
+      --soft: #efe6d8;
+      --green-soft: #e7f0eb;
+      --warn-soft: #fff1da;
+      --shadow: 0 16px 40px rgba(36,33,28,.14);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+      background: radial-gradient(circle at top, #fffaf0 0, var(--bg) 44%, #ece2d4 100%);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 30px;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .hero h1 {
+      font-size: clamp(30px, 5vw, 56px);
+      line-height: 1.06;
+      letter-spacing: -.04em;
+      margin: 0 0 16px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      line-height: 1.85;
+      color: var(--muted);
+      margin: 0;
+      max-width: 680px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--green-soft);
+      color: var(--brand);
+      padding: 8px 13px;
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(31,91,74,.18);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(280px, 1fr));
+      gap: 24px;
+      align-items: start;
+    }
+
+    .phone {
+      width: min(100%, 360px);
+      margin: 0 auto;
+      background: #171717;
+      border-radius: 44px;
+      padding: 12px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .screen {
+      min-height: 690px;
+      background: var(--paper);
+      border-radius: 34px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid #000;
+    }
+
+    .status {
+      height: 34px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 22px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #111;
+      background: rgba(255,255,255,.65);
+    }
+
+    .topbar {
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,253,248,.92);
+    }
+
+    .back { color: var(--brand); font-weight: 800; }
+    .title { font-weight: 800; font-size: 15px; }
+    .dots { letter-spacing: 2px; color: var(--muted); }
+
+    .content { padding: 18px; }
+    .card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 8px 22px rgba(36,33,28,.06);
+    }
+
+    .cover {
+      background:
+        linear-gradient(135deg, rgba(31,91,74,.94), rgba(31,91,74,.78)),
+        repeating-linear-gradient(90deg, transparent 0 18px, rgba(255,255,255,.06) 18px 20px);
+      color: white;
+      border-radius: 26px;
+      padding: 28px 22px;
+      min-height: 190px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover:after {
+      content: "";
+      position: absolute;
+      right: -38px;
+      bottom: -46px;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.12);
+    }
+
+    .cover h2 {
+      margin: 0 0 12px;
+      font-size: 30px;
+      line-height: 1.1;
+      letter-spacing: -.05em;
+    }
+
+    .cover p {
+      margin: 0;
+      color: rgba(255,255,255,.86);
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    .primary {
+      width: 100%;
+      border: 0;
+      background: var(--brand);
+      color: white;
+      font-weight: 800;
+      font-size: 16px;
+      padding: 16px;
+      border-radius: 16px;
+      margin-top: 14px;
+      cursor: pointer;
+    }
+
+    .secondary {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--ink);
+      font-weight: 800;
+      font-size: 15px;
+      padding: 14px;
+      border-radius: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .pillrow {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .pill {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      border-radius: 99px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .steps {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .step {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+    }
+
+    .num {
+      width: 26px;
+      height: 26px;
+      flex: 0 0 26px;
+      border-radius: 50%;
+      background: var(--brand);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .step b { display: block; font-size: 14px; margin-bottom: 3px; }
+    .step span { display: block; color: var(--muted); font-size: 12px; line-height: 1.45; }
+
+    .section-label {
+      font-size: 13px;
+      font-weight: 900;
+      margin: 6px 0 10px;
+      color: var(--brand);
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .input {
+      width: 100%;
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 14px 13px;
+      border-radius: 14px;
+      font-size: 15px;
+      color: var(--ink);
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 10px 0 14px;
+    }
+
+    .choice {
+      border: 1.5px solid var(--line);
+      background: #fff;
+      border-radius: 18px;
+      padding: 14px;
+      min-height: 78px;
+    }
+
+    .choice.active {
+      border-color: var(--brand);
+      background: var(--green-soft);
+    }
+
+    .choice b {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .choice span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .progress {
+      display: flex;
+      gap: 5px;
+      margin: 2px 0 18px;
+    }
+    .bar {
+      flex: 1;
+      height: 5px;
+      border-radius: 99px;
+      background: var(--line);
+    }
+    .bar.on { background: var(--brand); }
+
+    .notice {
+      background: var(--warn-soft);
+      border: 1px solid #f0c789;
+      border-radius: 18px;
+      padding: 13px;
+      color: #6d4921;
+      font-size: 12px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .timeline {
+      margin-top: 8px;
+      position: relative;
+      padding-left: 8px;
+    }
+
+    .tl {
+      display: grid;
+      grid-template-columns: 30px 1fr;
+      gap: 10px;
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--line);
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 11px;
+      font-weight: 900;
+      z-index: 2;
+    }
+
+    .tl.done .dot { background: var(--brand); }
+    .tl.now .dot { background: var(--brand2); }
+
+    .tl b {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 3px;
+    }
+
+    .tl span {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .price {
+      font-size: 38px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -.04em;
+      margin: 10px 0;
+    }
+
+    .report {
+      background: linear-gradient(135deg, #fff, #f6eee1);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .report h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .metric {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+    }
+
+    .metric b {
+      font-size: 18px;
+      color: var(--brand);
+    }
+
+    .message {
+      max-width: 82%;
+      border-radius: 18px;
+      padding: 12px 14px;
+      font-size: 13px;
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+
+    .bot {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-top-left-radius: 4px;
+    }
+
+    .user {
+      background: #d8f2c9;
+      margin-left: auto;
+      border-top-right-radius: 4px;
+    }
+
+    .rich {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--line);
+      border-top: 1px solid var(--line);
+    }
+
+    .rich div {
+      background: #fff;
+      padding: 13px 6px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 800;
+      min-height: 52px;
+    }
+
+    .caption {
+      max-width: 360px;
+      margin: 10px auto 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .strategy {
+      margin-top: 34px;
+      background: rgba(255,255,255,.62);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 24px;
+    }
+
+    .strategy h2 {
+      margin: 0 0 12px;
+      font-size: 26px;
+      letter-spacing: -.03em;
+    }
+
+    .strategy-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .strategy-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 16px;
+    }
+
+    .strategy-card b {
+      display: block;
+      color: var(--brand);
+      margin-bottom: 8px;
+    }
+
+    .strategy-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+
+    .vb-line-menu {
+      background: #fff;
+      border-radius: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+    .campaign-area {
+      background: #91b2d8;
+      padding: 8px;
+    }
+    .campaign-main {
+      background: #ffe7ae;
+      border: 2px solid #3159d6;
+      min-height: 150px;
+      border-radius: 4px;
+      padding: 18px;
+      color: #2450d6;
+      position: relative;
+      overflow: hidden;
+    }
+    .campaign-main b {
+      font-size: 22px;
+      display: block;
+      line-height: 1.25;
+      letter-spacing: -.02em;
+    }
+    .campaign-main span {
+      display: inline-block;
+      background: #ef4f54;
+      color: #fff;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+    .campaign-sub {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .coupon {
+      background: #eef4cf;
+      min-height: 74px;
+      padding: 10px;
+      border-radius: 2px;
+      font-weight: 900;
+      color: #00898b;
+      font-size: 14px;
+      border: 1px solid rgba(0,0,0,.06);
+    }
+    .coupon strong {
+      display: block;
+      font-size: 26px;
+      color: #0a8aa0;
+      line-height: 1;
+      margin: 4px 0;
+    }
+    .coupon.brown { color: #79552a; background:#fff3d8; }
+    .rich-menu-mock {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      border-top: 1px solid #078c8f;
+      border-left: 1px solid #078c8f;
+    }
+    .rich-cell {
+      min-height: 138px;
+      border-right: 1px solid #078c8f;
+      border-bottom: 1px solid #078c8f;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 12px;
+      color: #078c8f;
+      background: #fff;
+      font-weight: 900;
+      line-height: 1.35;
+    }
+    .rich-cell.primary-cell {
+      background: #009895;
+      color: #fff;
+      min-height: 160px;
+      font-size: 22px;
+    }
+    .rich-cell.small {
+      min-height: 118px;
+      font-size: 15px;
+    }
+    .rich-icon {
+      font-size: 36px;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .talk-quick {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .quick {
+      background: #fff;
+      border: 1.5px solid #00a99d;
+      color: #008f8a;
+      border-radius: 999px;
+      padding: 10px 8px;
+      font-size: 12px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .hero { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr; }
+      .strategy-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      .wrap { padding: 18px 12px 36px; }
+      .strategy-grid { grid-template-columns: 1fr; }
+      .screen { min-height: 650px; }
+    }
+
+    @media print {
+      body { background: white; }
+      .phone { box-shadow: none; break-inside: avoid; }
+      .grid { grid-template-columns: repeat(3, 1fr); }
+      .wrap { max-width: 1300px; }
+    }
+  </style>
 </head>
 <body>
-<div class="app">
-
-  <!-- ===== ヘッダー（プロフィール） ===== -->
-  <header class="appbar" id="appbar">
-    <div class="appbar__brand">
-      <span class="logo">VALUE BOOKS</span>
-      <span class="appbar__sub">本の買取</span>
-    </div>
-    <div class="appbar__user" id="userChip" hidden>
-      <img class="avatar" id="userAvatar" alt="" />
-      <span id="userName">—</span>
-    </div>
-  </header>
-
-  <!-- 進捗バー（Step1-4で表示） -->
-  <div class="steps" id="stepsBar" hidden>
-    <div class="steps__track"><div class="steps__fill" id="stepsFill"></div></div>
-    <div class="steps__label"><span id="stepNow">1</span> / 4 ・ <span id="stepName">本の情報</span></div>
-  </div>
-
-  <main class="main">
-
-    <!-- ===== 0. ウェルカム ===== -->
-    <section class="screen active" data-screen="welcome">
-      <div class="hero">
-        <div class="hero__art">📚</div>
-        <h1 class="hero__title">読み終えた本を、<br>次の読者へ。</h1>
-        <p class="hero__lead" id="heroLead">こんにちは。LINEから、かんたんに本の買取をお申し込みいただけます。</p>
+  <div class="wrap">
+    <section class="hero">
+      <div>
+        <div class="tag">VBOS / LIFF買取モック v0.1</div>
+        <h1>LINEで本棚整理。<br>買取を“申込”から“循環体験”へ。</h1>
+        <p>
+          バリューブックスの宅配買取を、LINE上のLIFFアプリとして再設計した初期モックです。
+          入口は軽く、進捗は見える化し、査定後は「現金・ポイント・寄付・次の読書」へつなげます。
+        </p>
       </div>
-      <ul class="promise">
-        <li><span class="promise__ic">⚡️</span><div><b>即振り</b><small>査定が終わったらすぐ入金。お返事を待たずに。</small></div></li>
-        <li><span class="promise__ic">🔍</span><div><b>1点1点しっかり査定</b><small>機械的な一律査定はしません。良い本は高く。</small></div></li>
-        <li><span class="promise__ic">🌱</span><div><b>本の循環</b><small>あなたの本は次の読者へ。寄付（チャリボン）も選べます。</small></div></li>
-      </ul>
-      <div class="note note--soft">
-        <b>LINEで完結。</b>メールアドレスやパスワードの登録は不要です。本人確認は初回の一度だけ。
-      </div>
-      <div class="sticky">
-        <button class="btn btn--primary" data-next="step-books">買取を申し込む</button>
-        <p class="sticky__hint" id="returningHint" hidden>おかえりなさい。本人確認は前回完了済み、今回はスキップできます。</p>
-      </div>
-    </section>
+      <div class="phone">
+        <div class="screen">
+          <div class="status"><span>9:41</span><span>LINE</span></div>
+          <div class="topbar">
+            <span class="back">‹</span>
+            <span class="title">バリューブックス</span>
+            <span class="dots">•••</span>
+          </div>
+          <div class="content">
+            <div class="cover">
+              <h2>LINEで<br>本棚整理</h2>
+              <p>読み終えた本を、次の読者へ。集荷予約から査定結果の確認まで、LINEで完結します。</p>
+            </div>
+            <button class="primary">本棚整理をはじめる</button>
+            <button class="secondary">前回と同じ内容で申し込む</button>
+            <div class="pillrow">
+              <div class="pill">最短3分</div>
+              <div class="pill">集荷無料</div>
+              <div class="pill">査定結果をLINE通知</div>
+            </div>
 
-    <!-- ===== 1. 本の情報 ===== -->
-    <section class="screen" data-screen="step-books">
-      <h2 class="h2">どんな本を、どれくらい？</h2>
-      <p class="sub">おおよそで大丈夫です。あとで変わってもOK。</p>
-
-      <label class="field">
-        <span class="field__label">冊数のめやす</span>
-        <div class="counter">
-          <button type="button" class="counter__btn" data-count="-">−</button>
-          <input id="bookCount" class="counter__val" type="text" inputmode="numeric" value="30" readonly />
-          <button type="button" class="counter__btn" data-count="+">＋</button>
-          <span class="counter__unit">冊</span>
-        </div>
-      </label>
-
-      <div class="field">
-        <span class="field__label">ジャンル（複数選択OK）</span>
-        <div class="chips" id="genreChips">
-          <button type="button" class="chip" data-chip>文庫・新書</button>
-          <button type="button" class="chip" data-chip>単行本・小説</button>
-          <button type="button" class="chip" data-chip>専門書・学術</button>
-          <button type="button" class="chip" data-chip>ビジネス</button>
-          <button type="button" class="chip" data-chip>コミック</button>
-          <button type="button" class="chip" data-chip>絵本・児童書</button>
-          <button type="button" class="chip" data-chip>図録・美術</button>
-          <button type="button" class="chip" data-chip>その他</button>
-        </div>
-      </div>
-
-      <label class="field">
-        <span class="field__label">段ボール箱の数</span>
-        <div class="seg" id="boxSeg">
-          <button type="button" class="seg__btn active" data-box="1">1箱</button>
-          <button type="button" class="seg__btn" data-box="2">2箱</button>
-          <button type="button" class="seg__btn" data-box="3">3箱+</button>
-          <button type="button" class="seg__btn" data-box="kit">箱がない</button>
-        </div>
-        <small class="hint" id="boxHint" hidden>「箱がない」を選ぶと、無料の集荷キット（段ボール）をお送りします。</small>
-      </label>
-
-      <div class="sticky sticky--row">
-        <button class="btn btn--ghost" data-back>戻る</button>
-        <button class="btn btn--primary" data-next="step-pickup">次へ</button>
-      </div>
-    </section>
-
-    <!-- ===== 2. 集荷 ===== -->
-    <section class="screen" data-screen="step-pickup">
-      <h2 class="h2">集荷先と日時</h2>
-      <p class="sub">ご自宅まで引き取りにうかがいます（送料無料）。</p>
-
-      <label class="field">
-        <span class="field__label">郵便番号</span>
-        <div class="zip">
-          <input id="zip" class="input" type="text" inputmode="numeric" maxlength="8" placeholder="386-0000" />
-          <button type="button" class="btn btn--mini" id="zipBtn">住所検索</button>
-        </div>
-      </label>
-      <label class="field">
-        <span class="field__label">住所</span>
-        <input id="addr" class="input" type="text" placeholder="長野県上田市…" />
-      </label>
-      <label class="field">
-        <span class="field__label">建物・部屋番号</span>
-        <input id="addr2" class="input" type="text" placeholder="〇〇マンション 101" />
-      </label>
-
-      <div class="field">
-        <span class="field__label">集荷希望日</span>
-        <div class="chips" id="dateChips">
-          <button type="button" class="chip" data-date>最短（明後日）</button>
-          <button type="button" class="chip" data-date>今週末</button>
-          <button type="button" class="chip" data-date>来週</button>
-          <button type="button" class="chip" data-date>日付を指定</button>
-        </div>
-      </div>
-
-      <div class="sticky sticky--row">
-        <button class="btn btn--ghost" data-back>戻る</button>
-        <button class="btn btn--primary" data-next="step-payment">次へ</button>
-      </div>
-    </section>
-
-    <!-- ===== 3. 受取方法（フライホイール） ===== -->
-    <section class="screen" data-screen="step-payment">
-      <h2 class="h2">買取代金の受取方法</h2>
-      <p class="sub">どちらでも。ポイントを選ぶと <b>+10%</b> お得です。</p>
-
-      <div class="pay" id="payOptions">
-        <label class="pay__opt">
-          <input type="radio" name="pay" value="points" checked />
-          <div class="pay__card pay__card--reco">
-            <div class="pay__badge">おすすめ ・ +10%</div>
-            <div class="pay__head"><span class="pay__ic">🌿</span><b>VBポイントで受け取る</b></div>
-            <p class="pay__desc">買取額に +10% 上乗せ。たまったポイントで、VBストアの本がそのまま買えます。</p>
-            <div class="flywheel">
-              <span>売る</span><i>→</i><span>ポイント+10%</span><i>→</i><span>本を買う</span><i>→</i><span>また売る</span>
+            <div class="steps">
+              <div class="step"><div class="num">1</div><div><b>本を箱に入れる</b><span>段ボールがなければ、箱の手配もできます。</span></div></div>
+              <div class="step"><div class="num">2</div><div><b>LINEで集荷予約</b><span>住所・箱数・希望日を入力します。</span></div></div>
+              <div class="step"><div class="num">3</div><div><b>査定結果を確認</b><span>現金・ポイント・寄付から選べます。</span></div></div>
             </div>
           </div>
-        </label>
-        <label class="pay__opt">
-          <input type="radio" name="pay" value="cash" />
-          <div class="pay__card">
-            <div class="pay__head"><span class="pay__ic">🏦</span><b>銀行振込（現金）</b></div>
-            <p class="pay__desc">ご指定の口座へ即振込。</p>
-            <div class="pay__bank" id="bankFields" hidden>
-              <input class="input" placeholder="銀行名" />
-              <input class="input" placeholder="支店名" />
-              <div class="row2">
-                <input class="input" placeholder="口座番号" inputmode="numeric" />
-                <input class="input" placeholder="名義（カナ）" />
+          <div class="rich">
+            <div>買取申込</div>
+            <div>進捗確認</div>
+            <div>本棚レポート</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div>
+        <div class="phone">
+          <div class="screen">
+            <div class="status"><span>9:41</span><span>LIFF</span></div>
+            <div class="topbar">
+              <span class="back">‹</span>
+              <span class="title">買取申込</span>
+              <span class="dots">保存</span>
+            </div>
+            <div class="content">
+              <div class="progress">
+                <div class="bar on"></div><div class="bar on"></div><div class="bar"></div><div class="bar"></div>
+              </div>
+
+              <div class="section-label">集荷内容</div>
+              <div class="card">
+                <div class="field">
+                  <label>箱数</label>
+                  <input class="input" value="3箱">
+                </div>
+                <div class="field">
+                  <label>本の種類</label>
+                  <div class="choice-grid">
+                    <div class="choice active"><b>一般書</b><span>小説・ビジネス・実用書など</span></div>
+                    <div class="choice"><b>子ども本</b><span>絵本・児童書・図鑑など</span></div>
+                    <div class="choice"><b>専門書</b><span>学術書・技術書など</span></div>
+                    <div class="choice"><b>まるごと</b><span>本棚整理をまとめて依頼</span></div>
+                  </div>
+                </div>
+                <div class="field">
+                  <label>集荷希望日</label>
+                  <input class="input" value="6月8日（月） 午前中">
+                </div>
+              </div>
+
+              <div class="notice">
+                本人確認が未完了です。初回のみ、申込完了前に本人確認をお願いします。
+              </div>
+
+              <button class="primary">本人確認へ進む</button>
+              <button class="secondary">あとで続きから再開</button>
+            </div>
+          </div>
+        </div>
+        <p class="caption">ポイント：申込途中保存を前提にし、LINE通知で「集荷日を選ぶだけ」など状態別に復帰させる。</p>
+      </div>
+
+      <div>
+        <div class="phone">
+          <div class="screen">
+            <div class="status"><span>9:41</span><span>LIFF</span></div>
+            <div class="topbar">
+              <span class="back">‹</span>
+              <span class="title">買取の進捗</span>
+              <span class="dots">•••</span>
+            </div>
+            <div class="content">
+              <div class="card">
+                <div class="section-label">申込番号 VB-20260603-001</div>
+                <h2 style="margin:0 0 6px;font-size:24px;">査定中です</h2>
+                <p style="margin:0;color:var(--muted);font-size:13px;line-height:1.6;">本が倉庫に到着しました。査定完了後、LINEでお知らせします。</p>
+              </div>
+
+              <div class="timeline">
+                <div class="tl done"><div class="dot">✓</div><div><b>申込完了</b><span>6月3日 10:12</span></div></div>
+                <div class="tl done"><div class="dot">✓</div><div><b>集荷完了</b><span>6月5日 午前中</span></div></div>
+                <div class="tl done"><div class="dot">✓</div><div><b>倉庫到着</b><span>6月6日 14:31</span></div></div>
+                <div class="tl now"><div class="dot">…</div><div><b>査定中</b><span>通常1〜3営業日で完了します。</span></div></div>
+                <div class="tl"><div class="dot"></div><div><b>査定結果の確認</b><span>LINEから承認・受取方法を選べます。</span></div></div>
+                <div class="tl"><div class="dot"></div><div><b>入金・ポイント付与</b><span>承認後に処理されます。</span></div></div>
+              </div>
+
+              <button class="secondary">問い合わせる</button>
+            </div>
+          </div>
+        </div>
+        <p class="caption">ポイント：「今どこ？」を消す。CS削減とユーザー安心の両方に効く画面。</p>
+      </div>
+
+      <div>
+        <div class="phone">
+          <div class="screen">
+            <div class="status"><span>9:41</span><span>LINE</span></div>
+            <div class="topbar">
+              <span class="back">‹</span>
+              <span class="title">バリューブックス</span>
+              <span class="dots">•••</span>
+            </div>
+            <div class="content" style="padding-bottom:70px;">
+              <div class="message bot">
+                査定が完了しました。今回の査定額は以下です。
+              </div>
+              <div class="card">
+                <div class="section-label">査定結果</div>
+                <div class="price">¥2,480</div>
+                <p style="color:var(--muted);font-size:13px;line-height:1.6;margin:0;">ポイント受取なら 2,728円分として使えます。</p>
+                <button class="primary">査定結果を確認する</button>
+              </div>
+
+              <div class="message user">ポイントで受け取りたいです</div>
+
+              <div class="report">
+                <h3>本棚循環レポート</h3>
+                <div class="metric"><span>次の読者へ向かう本</span><b>27冊</b></div>
+                <div class="metric"><span>ブックギフト候補</span><b>4冊</b></div>
+                <div class="metric"><span>リユース資源化</span><b>3冊</b></div>
+              </div>
+
+              <div class="message bot">
+                本を循環させていただき、ありがとうございました。3か月後に本棚整理のリマインドを送れます。
+              </div>
+              <button class="secondary">3か月後に通知する</button>
+            </div>
+            <div class="rich">
+              <div>結果確認</div>
+              <div>ポイントで買う</div>
+              <div>寄付する</div>
+            </div>
+          </div>
+        </div>
+        <p class="caption">ポイント：査定完了で終わらせず、ポイント・寄付・再買取・購入に接続する。</p>
+      </div>
+    </section>
+
+
+
+    <section class="strategy" style="margin-top:28px;">
+      <h2>既存LINEリッチメニューを活かした改善案</h2>
+      <p style="margin:0 0 18px;color:var(--muted);line-height:1.75;">
+        現在のLINEは「買取申込み」が大きく配置されていて、すでに導線として強いです。
+        改善ポイントは、初回ユーザーには通常申込、2回目以降ユーザーには「前回と同じ内容で集荷予約」を出し分けること。
+        同じボタンでも、ユーザー状態によって体験を変えるのが最も効果的です。
+      </p>
+
+      <section class="grid">
+        <div>
+          <div class="phone">
+            <div class="screen">
+              <div class="status"><span>10:22</span><span>4G</span></div>
+              <div class="topbar">
+                <span class="back">‹</span>
+                <span class="title">VALUEBOOKS</span>
+                <span class="dots">☰</span>
+              </div>
+              <div class="vb-line-menu">
+                <div class="campaign-area">
+                  <div class="campaign-main">
+                    <span>限定80セット</span>
+                    <b>父の日<br>キャンペーン</b>
+                    <p style="font-size:12px;margin:10px 0 0;color:#2450d6;font-weight:800;">ギフトセット / オリジナルトート付き</p>
+                  </div>
+                  <div class="campaign-sub">
+                    <div class="coupon">買取に使える<strong>10%</strong>ポイント還元</div>
+                    <div class="coupon brown">お買い物に使える<br><strong style="font-size:18px;">送料無料</strong>クーポン</div>
+                  </div>
+                </div>
+                <div class="rich-menu-mock">
+                  <div class="rich-cell primary-cell">
+                    <div><span class="rich-icon">📖</span>読み終えた本を<br>次の読み手へ<br><br>買取申込み</div>
+                  </div>
+                  <div class="rich-cell">
+                    <div><span class="rich-icon">🎫</span>お買い物<br>クーポン</div>
+                  </div>
+                  <div class="rich-cell small">
+                    <div><span class="rich-icon">📱</span>ONLINE<br>STORE</div>
+                  </div>
+                  <div class="rich-cell small">
+                    <div><span class="rich-icon">✨</span>選書AI</div>
+                  </div>
+                  <div class="rich-cell small">
+                    <div><span class="rich-icon">🏪</span>おすすめ<br>書店</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </label>
-      </div>
-
-      <div class="sticky sticky--row">
-        <button class="btn btn--ghost" data-back>戻る</button>
-        <button class="btn btn--primary" data-next="step-kyc">次へ</button>
-      </div>
-    </section>
-
-    <!-- ===== 4. 本人確認（eKYC・初回のみ） ===== -->
-    <section class="screen" data-screen="step-kyc">
-      <h2 class="h2">本人確認（初回のみ）</h2>
-      <p class="sub">古物営業法にもとづき、初回のお取引のみ確認させていただきます。<b>2回目以降は不要</b>です。</p>
-
-      <div class="upload" id="upDoc">
-        <div class="upload__label">① 本人確認書類</div>
-        <p class="upload__hint">運転免許証 / マイナンバーカード / パスポート など</p>
-        <label class="upload__drop">
-          <input type="file" accept="image/*" capture="environment" hidden data-upload="doc" />
-          <div class="upload__inner" data-slot="doc">
-            <span class="upload__ic">📷</span>
-            <span>タップして撮影・アップロード</span>
-          </div>
-        </label>
-      </div>
-
-      <div class="upload" id="upFace">
-        <div class="upload__label">② 顔写真（セルフィー）</div>
-        <p class="upload__hint">書類とご本人の確認のため</p>
-        <label class="upload__drop">
-          <input type="file" accept="image/*" capture="user" hidden data-upload="face" />
-          <div class="upload__inner" data-slot="face">
-            <span class="upload__ic">🤳</span>
-            <span>タップして撮影</span>
-          </div>
-        </label>
-      </div>
-
-      <div class="note note--soft">
-        <b>🔒 安全に管理します。</b>書類は暗号化して保管し、本人確認以外には使用しません。
-      </div>
-
-      <div class="sticky sticky--row">
-        <button class="btn btn--ghost" data-back>戻る</button>
-        <button class="btn btn--primary" data-next="confirm">確認へ</button>
-      </div>
-    </section>
-
-    <!-- ===== 確認 ===== -->
-    <section class="screen" data-screen="confirm">
-      <h2 class="h2">この内容で申し込む</h2>
-      <div class="summary" id="summary"></div>
-      <label class="agree">
-        <input type="checkbox" id="agree" />
-        <span><a href="#" class="link">買取規約</a>・<a href="#" class="link">古物営業法にもとづく本人確認</a>に同意します</span>
-      </label>
-      <div class="sticky sticky--row">
-        <button class="btn btn--ghost" data-back>戻る</button>
-        <button class="btn btn--primary" id="submitBtn" disabled>申し込む</button>
-      </div>
-    </section>
-
-    <!-- ===== 完了（黄金の72時間） ===== -->
-    <section class="screen screen--complete" data-screen="complete">
-      <div class="done">
-        <div class="done__check">✓</div>
-        <h2 class="done__title" id="doneTitle">ありがとうございました</h2>
-        <p class="done__lead" id="doneLead">集荷の手配をしました。本が届きしだい、1点1点ていねいに査定します。</p>
-      </div>
-
-      <div class="card card--accent">
-        <div class="card__row"><span class="card__ic">⚡️</span><div><b>査定が終わったら、すぐ入金</b><small>結果のご連絡を待たずに即振り。完了はLINEでお知らせします。</small></div></div>
-      </div>
-
-      <!-- 次回オファー予約 -->
-      <div class="coupon">
-        <div class="coupon__left">
-          <div class="coupon__tag">次回かぎり</div>
-          <div class="coupon__big">買取 +10%</div>
-          <div class="coupon__sub">次に本がたまったら、ぜひ。期限はありません。</div>
+          <p class="caption">現状の強み：買取が一番大きい。ここを「初回」と「リピート」で出し分ける。</p>
         </div>
-        <div class="coupon__cut"></div>
-        <div class="coupon__right"><span>🎟️</span></div>
-      </div>
 
-      <!-- ポイント付与 → 買い手化 -->
-      <div class="card">
-        <div class="card__row">
-          <span class="card__ic">🌿</span>
-          <div>
-            <b>お礼に 500ポイント を進呈しました</b>
-            <small>あなたが手放した本と相性の良い一冊が、ストアにあります。</small>
+        <div>
+          <div class="phone">
+            <div class="screen">
+              <div class="status"><span>10:22</span><span>LINE</span></div>
+              <div class="topbar">
+                <span class="back">‹</span>
+                <span class="title">VALUEBOOKS</span>
+                <span class="dots">☰</span>
+              </div>
+              <div class="content" style="padding-bottom:70px;">
+                <div class="message bot">
+                  前回と同じ住所・3箱・VBポイント受取で、すぐ集荷予約できます。
+                </div>
+                <div class="message bot">
+                  集荷時間を選ぶだけで完了です。
+                </div>
+                <div class="talk-quick">
+                  <div class="quick">6/8 午前中</div>
+                  <div class="quick">6/8 14-16時</div>
+                  <div class="quick">6/9 午前中</div>
+                  <div class="quick">別の日を選ぶ</div>
+                </div>
+                <div class="message user">6/8 午前中</div>
+                <div class="message bot">
+                  6/8（月）午前中で予約できます。確定しますか？
+                </div>
+                <button class="primary">この内容で確定する</button>
+                <button class="secondary">住所・箱数を変更する</button>
+              </div>
+              <div class="rich">
+                <div>同じ内容で買取</div>
+                <div>変更する</div>
+                <div>進捗確認</div>
+              </div>
+            </div>
           </div>
+          <p class="caption">2回目以降：LIFFフォームを開く前に、トーク内で日時選択まで進める。</p>
         </div>
-        <div class="reco">
-          <div class="reco__item"><div class="reco__cover">📕</div><span>羊と鋼の森</span></div>
-          <div class="reco__item"><div class="reco__cover">📗</div><span>本を読む本</span></div>
-          <div class="reco__item"><div class="reco__cover">📘</div><span>夜と霧</span></div>
+
+        <div>
+          <div class="phone">
+            <div class="screen">
+              <div class="status"><span>10:22</span><span>LIFF</span></div>
+              <div class="topbar">
+                <span class="back">‹</span>
+                <span class="title">前回と同じ内容で買取</span>
+                <span class="dots">•••</span>
+              </div>
+              <div class="content">
+                <div class="card">
+                  <div class="section-label">確認だけで完了</div>
+                  <h2 style="margin:0 0 8px;font-size:25px;line-height:1.25;">前回の内容を使います</h2>
+                  <p style="margin:0;color:var(--muted);font-size:13px;line-height:1.6;">
+                    住所・本人確認・受取方法に変更がなければ、集荷時間の選択だけで申し込みできます。
+                  </p>
+                </div>
+                <div class="card">
+                  <div class="metric"><span>集荷先</span><b style="font-size:13px;">前回と同じ</b></div>
+                  <div class="metric"><span>箱数</span><b>3箱</b></div>
+                  <div class="metric"><span>受取方法</span><b style="font-size:13px;">VBポイント</b></div>
+                  <div class="metric"><span>集荷日時</span><b style="font-size:13px;">6/8 午前中</b></div>
+                </div>
+                <button class="primary">10秒で予約完了</button>
+                <button class="secondary">内容を変更する</button>
+                <div class="notice" style="margin-top:12px;">
+                  初回は通常申込。2回目以降だけ、このショートカットを表示します。
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="caption">変更がある時だけLIFFへ。LIFFは「確認・変更・本人確認」の受け皿にする。</p>
         </div>
-        <button class="btn btn--soft">ポイントで本を見る</button>
-      </div>
-
-      <!-- 旅立ち通知の予告（VB固有） -->
-      <div class="card card--journey">
-        <div class="card__row"><span class="card__ic">✉️</span><div><b>あなたの本の「旅立ち」をお知らせします</b><small>「あなたの〇〇が、△△の読者のもとへ届きました」——本が次の誰かに渡ったら、LINEでお伝えします。</small></div></div>
-      </div>
-
-      <!-- ステータス -->
-      <div class="tier">
-        <div class="tier__head"><b>ゴールド出品者まで、あと1回</b><span>シルバー</span></div>
-        <div class="tier__bar"><div class="tier__fill" style="width:55%"></div></div>
-        <small class="tier__hint">2回目のご利用で、買取UP・送料無料・優先査定の特典が付きます。</small>
-      </div>
-
-      <div class="sticky sticky--inline">
-        <button class="btn btn--primary" id="restartBtn">トップへ戻る</button>
-      </div>
+      </section>
     </section>
 
-  </main>
-</div>
-<script src="app.js"></script>
+
+    <section class="strategy" style="margin-top:28px;">
+      <h2>2回目以降：トークで集荷時間を決めるだけ</h2>
+      <p style="margin:0 0 18px;color:var(--muted);line-height:1.75;">
+        住所・本人確認・振込先・前回の箱数が使える場合は、LIFFフォームに遷移させず、LINEトーク上のクイック返信だけで申込完了する設計。
+        ユーザーに伝えるべき価値は「入力が少ない」ではなく「もう入力しなくていい」。
+      </p>
+
+      <section class="grid">
+        <div>
+          <div class="phone">
+            <div class="screen">
+              <div class="status"><span>9:41</span><span>LINE</span></div>
+              <div class="topbar">
+                <span class="back">‹</span>
+                <span class="title">バリューブックス</span>
+                <span class="dots">•••</span>
+              </div>
+              <div class="content" style="padding-bottom:70px;">
+                <div class="message bot">
+                  そろそろ本棚整理のタイミングです。<br>
+                  前回と同じ住所・3箱で集荷予約できます。
+                </div>
+                <div class="message bot">
+                  集荷希望日を選んでください。
+                </div>
+                <div class="choice-grid">
+                  <div class="choice active"><b>6/8 月</b><span>午前中</span></div>
+                  <div class="choice"><b>6/8 月</b><span>14-16時</span></div>
+                  <div class="choice"><b>6/9 火</b><span>午前中</span></div>
+                  <div class="choice"><b>6/9 火</b><span>16-18時</span></div>
+                </div>
+                <button class="primary">この時間で集荷予約</button>
+                <button class="secondary">住所・箱数を変更する</button>
+              </div>
+              <div class="rich">
+                <div>同じ内容で買取</div>
+                <div>変更する</div>
+                <div>進捗確認</div>
+              </div>
+            </div>
+          </div>
+          <p class="caption">通知文では「前回と同じ住所・箱数でできます」と最初に伝え、入力不要の価値を明確にする。</p>
+        </div>
+
+        <div>
+          <div class="phone">
+            <div class="screen">
+              <div class="status"><span>9:41</span><span>LINE</span></div>
+              <div class="topbar">
+                <span class="back">‹</span>
+                <span class="title">バリューブックス</span>
+                <span class="dots">•••</span>
+              </div>
+              <div class="content" style="padding-bottom:70px;">
+                <div class="message bot">
+                  前回と同じ内容でよろしいですか？
+                </div>
+                <div class="card">
+                  <div class="section-label">前回の内容</div>
+                  <div class="metric"><span>集荷先</span><b style="font-size:14px;">長野県上田市...</b></div>
+                  <div class="metric"><span>箱数</span><b>3箱</b></div>
+                  <div class="metric"><span>受取方法</span><b style="font-size:14px;">VBポイント</b></div>
+                </div>
+                <div class="message user">6/8 午前中でお願いします</div>
+                <div class="message bot">
+                  ありがとうございます。<br>
+                  6/8（月）午前中に集荷を予約します。
+                </div>
+                <button class="primary">予約を確定する</button>
+                <button class="secondary">内容を変更する</button>
+              </div>
+              <div class="rich">
+                <div>予約確定</div>
+                <div>変更</div>
+                <div>ヘルプ</div>
+              </div>
+            </div>
+          </div>
+          <p class="caption">確認は1画面で済ませる。ユーザーの認知負荷は「日時だけ選ぶ」に絞る。</p>
+        </div>
+
+        <div>
+          <div class="phone">
+            <div class="screen">
+              <div class="status"><span>9:41</span><span>LINE</span></div>
+              <div class="topbar">
+                <span class="back">‹</span>
+                <span class="title">バリューブックス</span>
+                <span class="dots">•••</span>
+              </div>
+              <div class="content" style="padding-bottom:70px;">
+                <div class="message bot">
+                  集荷予約が完了しました。
+                </div>
+                <div class="card">
+                  <div class="section-label">予約内容</div>
+                  <h2 style="margin:0 0 8px;font-size:24px;">6/8（月）午前中</h2>
+                  <p style="margin:0;color:var(--muted);font-size:13px;line-height:1.6;">
+                    前回と同じ住所に、3箱分の集荷に伺います。
+                  </p>
+                  <button class="primary">進捗を見る</button>
+                </div>
+                <div class="notice">
+                  住所・箱数・振込先に変更がある場合は、集荷前日までに変更できます。
+                </div>
+                <div class="message bot">
+                  前日にリマインドします。箱に本を入れてお待ちください。
+                </div>
+              </div>
+              <div class="rich">
+                <div>進捗確認</div>
+                <div>変更する</div>
+                <div>キャンセル</div>
+              </div>
+            </div>
+          </div>
+          <p class="caption">完了後は進捗画面に接続。リピート体験は「予約完了まで10秒」を目標にする。</p>
+        </div>
+      </section>
+    </section>
+
+
+    <section class="strategy">
+      <h2>このモックで表現している設計思想</h2>
+      <div class="strategy-grid">
+        <div class="strategy-card">
+          <b>1. 買取ではなく本棚整理</b>
+          <p>金額訴求だけにせず、片づけ・循環・次の読者という生活文脈にする。</p>
+        </div>
+        <div class="strategy-card">
+          <b>2. 途中離脱を資産化</b>
+          <p>LIFF内で状態を保存し、LINEで再開通知を出せるようにする。</p>
+        </div>
+        <div class="strategy-card">
+          <b>3. 進捗の見える化</b>
+          <p>集荷・到着・査定・承認・入金まで見せ、問い合わせを減らす。</p>
+        </div>
+        <div class="strategy-card">
+          <b>4. 買取後CRM</b>
+          <p>現金だけでなく、ポイント・寄付・次回購入・再買取へ接続する。</p>
+        </div>
+      </div>
+    </section>
+  </div>
 </body>
 </html>

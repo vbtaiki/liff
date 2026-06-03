@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#2F6B4F" />
+<title>バリューブックス 本の買取</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== ヘッダー（プロフィール） ===== -->
+  <header class="appbar" id="appbar">
+    <div class="appbar__brand">
+      <span class="logo">VALUE BOOKS</span>
+      <span class="appbar__sub">本の買取</span>
+    </div>
+    <div class="appbar__user" id="userChip" hidden>
+      <img class="avatar" id="userAvatar" alt="" />
+      <span id="userName">—</span>
+    </div>
+  </header>
+
+  <!-- 進捗バー（Step1-4で表示） -->
+  <div class="steps" id="stepsBar" hidden>
+    <div class="steps__track"><div class="steps__fill" id="stepsFill"></div></div>
+    <div class="steps__label"><span id="stepNow">1</span> / 4 ・ <span id="stepName">本の情報</span></div>
+  </div>
+
+  <main class="main">
+
+    <!-- ===== 0. ウェルカム ===== -->
+    <section class="screen active" data-screen="welcome">
+      <div class="hero">
+        <div class="hero__art">📚</div>
+        <h1 class="hero__title">読み終えた本を、<br>次の読者へ。</h1>
+        <p class="hero__lead" id="heroLead">こんにちは。LINEから、かんたんに本の買取をお申し込みいただけます。</p>
+      </div>
+      <ul class="promise">
+        <li><span class="promise__ic">⚡️</span><div><b>即振り</b><small>査定が終わったらすぐ入金。お返事を待たずに。</small></div></li>
+        <li><span class="promise__ic">🔍</span><div><b>1点1点しっかり査定</b><small>機械的な一律査定はしません。良い本は高く。</small></div></li>
+        <li><span class="promise__ic">🌱</span><div><b>本の循環</b><small>あなたの本は次の読者へ。寄付（チャリボン）も選べます。</small></div></li>
+      </ul>
+      <div class="note note--soft">
+        <b>LINEで完結。</b>メールアドレスやパスワードの登録は不要です。本人確認は初回の一度だけ。
+      </div>
+      <div class="sticky">
+        <button class="btn btn--primary" data-next="step-books">買取を申し込む</button>
+        <p class="sticky__hint" id="returningHint" hidden>おかえりなさい。本人確認は前回完了済み、今回はスキップできます。</p>
+      </div>
+    </section>
+
+    <!-- ===== 1. 本の情報 ===== -->
+    <section class="screen" data-screen="step-books">
+      <h2 class="h2">どんな本を、どれくらい？</h2>
+      <p class="sub">おおよそで大丈夫です。あとで変わってもOK。</p>
+
+      <label class="field">
+        <span class="field__label">冊数のめやす</span>
+        <div class="counter">
+          <button type="button" class="counter__btn" data-count="-">−</button>
+          <input id="bookCount" class="counter__val" type="text" inputmode="numeric" value="30" readonly />
+          <button type="button" class="counter__btn" data-count="+">＋</button>
+          <span class="counter__unit">冊</span>
+        </div>
+      </label>
+
+      <div class="field">
+        <span class="field__label">ジャンル（複数選択OK）</span>
+        <div class="chips" id="genreChips">
+          <button type="button" class="chip" data-chip>文庫・新書</button>
+          <button type="button" class="chip" data-chip>単行本・小説</button>
+          <button type="button" class="chip" data-chip>専門書・学術</button>
+          <button type="button" class="chip" data-chip>ビジネス</button>
+          <button type="button" class="chip" data-chip>コミック</button>
+          <button type="button" class="chip" data-chip>絵本・児童書</button>
+          <button type="button" class="chip" data-chip>図録・美術</button>
+          <button type="button" class="chip" data-chip>その他</button>
+        </div>
+      </div>
+
+      <label class="field">
+        <span class="field__label">段ボール箱の数</span>
+        <div class="seg" id="boxSeg">
+          <button type="button" class="seg__btn active" data-box="1">1箱</button>
+          <button type="button" class="seg__btn" data-box="2">2箱</button>
+          <button type="button" class="seg__btn" data-box="3">3箱+</button>
+          <button type="button" class="seg__btn" data-box="kit">箱がない</button>
+        </div>
+        <small class="hint" id="boxHint" hidden>「箱がない」を選ぶと、無料の集荷キット（段ボール）をお送りします。</small>
+      </label>
+
+      <div class="sticky sticky--row">
+        <button class="btn btn--ghost" data-back>戻る</button>
+        <button class="btn btn--primary" data-next="step-pickup">次へ</button>
+      </div>
+    </section>
+
+    <!-- ===== 2. 集荷 ===== -->
+    <section class="screen" data-screen="step-pickup">
+      <h2 class="h2">集荷先と日時</h2>
+      <p class="sub">ご自宅まで引き取りにうかがいます（送料無料）。</p>
+
+      <label class="field">
+        <span class="field__label">郵便番号</span>
+        <div class="zip">
+          <input id="zip" class="input" type="text" inputmode="numeric" maxlength="8" placeholder="386-0000" />
+          <button type="button" class="btn btn--mini" id="zipBtn">住所検索</button>
+        </div>
+      </label>
+      <label class="field">
+        <span class="field__label">住所</span>
+        <input id="addr" class="input" type="text" placeholder="長野県上田市…" />
+      </label>
+      <label class="field">
+        <span class="field__label">建物・部屋番号</span>
+        <input id="addr2" class="input" type="text" placeholder="〇〇マンション 101" />
+      </label>
+
+      <div class="field">
+        <span class="field__label">集荷希望日</span>
+        <div class="chips" id="dateChips">
+          <button type="button" class="chip" data-date>最短（明後日）</button>
+          <button type="button" class="chip" data-date>今週末</button>
+          <button type="button" class="chip" data-date>来週</button>
+          <button type="button" class="chip" data-date>日付を指定</button>
+        </div>
+      </div>
+
+      <div class="sticky sticky--row">
+        <button class="btn btn--ghost" data-back>戻る</button>
+        <button class="btn btn--primary" data-next="step-payment">次へ</button>
+      </div>
+    </section>
+
+    <!-- ===== 3. 受取方法（フライホイール） ===== -->
+    <section class="screen" data-screen="step-payment">
+      <h2 class="h2">買取代金の受取方法</h2>
+      <p class="sub">どちらでも。ポイントを選ぶと <b>+10%</b> お得です。</p>
+
+      <div class="pay" id="payOptions">
+        <label class="pay__opt">
+          <input type="radio" name="pay" value="points" checked />
+          <div class="pay__card pay__card--reco">
+            <div class="pay__badge">おすすめ ・ +10%</div>
+            <div class="pay__head"><span class="pay__ic">🌿</span><b>VBポイントで受け取る</b></div>
+            <p class="pay__desc">買取額に +10% 上乗せ。たまったポイントで、VBストアの本がそのまま買えます。</p>
+            <div class="flywheel">
+              <span>売る</span><i>→</i><span>ポイント+10%</span><i>→</i><span>本を買う</span><i>→</i><span>また売る</span>
+            </div>
+          </div>
+        </label>
+        <label class="pay__opt">
+          <input type="radio" name="pay" value="cash" />
+          <div class="pay__card">
+            <div class="pay__head"><span class="pay__ic">🏦</span><b>銀行振込（現金）</b></div>
+            <p class="pay__desc">ご指定の口座へ即振込。</p>
+            <div class="pay__bank" id="bankFields" hidden>
+              <input class="input" placeholder="銀行名" />
+              <input class="input" placeholder="支店名" />
+              <div class="row2">
+                <input class="input" placeholder="口座番号" inputmode="numeric" />
+                <input class="input" placeholder="名義（カナ）" />
+              </div>
+            </div>
+          </div>
+        </label>
+      </div>
+
+      <div class="sticky sticky--row">
+        <button class="btn btn--ghost" data-back>戻る</button>
+        <button class="btn btn--primary" data-next="step-kyc">次へ</button>
+      </div>
+    </section>
+
+    <!-- ===== 4. 本人確認（eKYC・初回のみ） ===== -->
+    <section class="screen" data-screen="step-kyc">
+      <h2 class="h2">本人確認（初回のみ）</h2>
+      <p class="sub">古物営業法にもとづき、初回のお取引のみ確認させていただきます。<b>2回目以降は不要</b>です。</p>
+
+      <div class="upload" id="upDoc">
+        <div class="upload__label">① 本人確認書類</div>
+        <p class="upload__hint">運転免許証 / マイナンバーカード / パスポート など</p>
+        <label class="upload__drop">
+          <input type="file" accept="image/*" capture="environment" hidden data-upload="doc" />
+          <div class="upload__inner" data-slot="doc">
+            <span class="upload__ic">📷</span>
+            <span>タップして撮影・アップロード</span>
+          </div>
+        </label>
+      </div>
+
+      <div class="upload" id="upFace">
+        <div class="upload__label">② 顔写真（セルフィー）</div>
+        <p class="upload__hint">書類とご本人の確認のため</p>
+        <label class="upload__drop">
+          <input type="file" accept="image/*" capture="user" hidden data-upload="face" />
+          <div class="upload__inner" data-slot="face">
+            <span class="upload__ic">🤳</span>
+            <span>タップして撮影</span>
+          </div>
+        </label>
+      </div>
+
+      <div class="note note--soft">
+        <b>🔒 安全に管理します。</b>書類は暗号化して保管し、本人確認以外には使用しません。
+      </div>
+
+      <div class="sticky sticky--row">
+        <button class="btn btn--ghost" data-back>戻る</button>
+        <button class="btn btn--primary" data-next="confirm">確認へ</button>
+      </div>
+    </section>
+
+    <!-- ===== 確認 ===== -->
+    <section class="screen" data-screen="confirm">
+      <h2 class="h2">この内容で申し込む</h2>
+      <div class="summary" id="summary"></div>
+      <label class="agree">
+        <input type="checkbox" id="agree" />
+        <span><a href="#" class="link">買取規約</a>・<a href="#" class="link">古物営業法にもとづく本人確認</a>に同意します</span>
+      </label>
+      <div class="sticky sticky--row">
+        <button class="btn btn--ghost" data-back>戻る</button>
+        <button class="btn btn--primary" id="submitBtn" disabled>申し込む</button>
+      </div>
+    </section>
+
+    <!-- ===== 完了（黄金の72時間） ===== -->
+    <section class="screen screen--complete" data-screen="complete">
+      <div class="done">
+        <div class="done__check">✓</div>
+        <h2 class="done__title" id="doneTitle">ありがとうございました</h2>
+        <p class="done__lead" id="doneLead">集荷の手配をしました。本が届きしだい、1点1点ていねいに査定します。</p>
+      </div>
+
+      <div class="card card--accent">
+        <div class="card__row"><span class="card__ic">⚡️</span><div><b>査定が終わったら、すぐ入金</b><small>結果のご連絡を待たずに即振り。完了はLINEでお知らせします。</small></div></div>
+      </div>
+
+      <!-- 次回オファー予約 -->
+      <div class="coupon">
+        <div class="coupon__left">
+          <div class="coupon__tag">次回かぎり</div>
+          <div class="coupon__big">買取 +10%</div>
+          <div class="coupon__sub">次に本がたまったら、ぜひ。期限はありません。</div>
+        </div>
+        <div class="coupon__cut"></div>
+        <div class="coupon__right"><span>🎟️</span></div>
+      </div>
+
+      <!-- ポイント付与 → 買い手化 -->
+      <div class="card">
+        <div class="card__row">
+          <span class="card__ic">🌿</span>
+          <div>
+            <b>お礼に 500ポイント を進呈しました</b>
+            <small>あなたが手放した本と相性の良い一冊が、ストアにあります。</small>
+          </div>
+        </div>
+        <div class="reco">
+          <div class="reco__item"><div class="reco__cover">📕</div><span>羊と鋼の森</span></div>
+          <div class="reco__item"><div class="reco__cover">📗</div><span>本を読む本</span></div>
+          <div class="reco__item"><div class="reco__cover">📘</div><span>夜と霧</span></div>
+        </div>
+        <button class="btn btn--soft">ポイントで本を見る</button>
+      </div>
+
+      <!-- 旅立ち通知の予告（VB固有） -->
+      <div class="card card--journey">
+        <div class="card__row"><span class="card__ic">✉️</span><div><b>あなたの本の「旅立ち」をお知らせします</b><small>「あなたの〇〇が、△△の読者のもとへ届きました」——本が次の誰かに渡ったら、LINEでお伝えします。</small></div></div>
+      </div>
+
+      <!-- ステータス -->
+      <div class="tier">
+        <div class="tier__head"><b>ゴールド出品者まで、あと1回</b><span>シルバー</span></div>
+        <div class="tier__bar"><div class="tier__fill" style="width:55%"></div></div>
+        <small class="tier__hint">2回目のご利用で、買取UP・送料無料・優先査定の特典が付きます。</small>
+      </div>
+
+      <div class="sticky sticky--inline">
+        <button class="btn btn--primary" id="restartBtn">トップへ戻る</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
